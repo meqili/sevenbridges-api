@@ -12,7 +12,7 @@ parser.add_argument('--run', action='store_true', help='Include to run the task'
 args = parser.parse_args()
 
 # Authentication and Configuration ------------------
-api = sbg.Api(url='https://cavatica-api.sbgenomics.com/v2', token='d188ed5269a1472d964311a2bb437f42')
+api = sbg.Api(url='https://cavatica-api.sbgenomics.com/v2', token='XXXX')
 
 # Get the list of vcf file to run 
 parent_folder = '66267dd276e36f4cdeeb6f8c'  # folder name Cranio_D3b
