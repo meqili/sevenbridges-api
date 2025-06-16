@@ -1,5 +1,6 @@
 import sevenbridges as sbg
 import argparse
+import os
 
 # Argument Parsing ------------
 usage = '''
@@ -14,7 +15,11 @@ chromosome_interested = args.chromosome
 print(f'Chromosome of interest: {chromosome_interested}')
 
 # Authentication and Configuration ------------------
-api = sbg.Api(url='https://cavatica-api.sbgenomics.com/v2', token='TOKEN_KEY')
+TOKEN = os.environ.get("SBG_API_TOKEN")
+if not TOKEN:
+    raise ValueError("❌ SBG_API_TOKEN environment variable not set.")
+api = sbg.Api(url="https://cavatica-api.sbgenomics.com/v2", token=TOKEN)
+
 project_id = 'yiran/variant-workbench-testing'     
 # Destination folder
 parent_folder = '64b0140b7440d21289634fb4' # folder name virtual_human_exome_vcfs_vep_annotated

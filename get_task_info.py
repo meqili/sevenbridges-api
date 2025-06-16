@@ -1,9 +1,12 @@
 import sevenbridges as sbg
-from datetime import datetime, timedelta
+# from datetime import datetime, timedelta
+import os
 
-# Authentication and Configuration
-api = sbg.Api(url='https://cavatica-api.sbgenomics.com/v2', token='TOKEN_KEY')
-project_id = 'yiran/variant-workbench-testing'
+# Authentication and Configuration ------------------
+TOKEN = os.environ.get("SBG_API_TOKEN")
+if not TOKEN:
+    raise ValueError("❌ SBG_API_TOKEN environment variable not set.")
+api = sbg.Api(url="https://cavatica-api.sbgenomics.com/v2", token=TOKEN)
 
 # Define a function to retrieve tasks with a specific name pattern
 def get_tasks_with_name_pattern(api, project_id, name_pattern):
@@ -19,7 +22,7 @@ def get_task_info(task):
     return task_id, task_name, task_cost
 
 # Filter tasks by name pattern and retrieve task info
-name_pattern = "exonic_vcfs_post_process run"
+name_pattern = "Family based variant filtering workflow (SNV/indel) run - cranio_RIMGC_rerun"
 filtered_tasks = get_tasks_with_name_pattern(api, project_id, name_pattern)
 
 # Extract and print task id, name, and cost

@@ -1,7 +1,11 @@
 import sevenbridges as sbg
+import os
 
-# Authentication and Configuration
-api = sbg.Api(url='https://cavatica-api.sbgenomics.com/v2', token='TOKEN_KEY')
+# Authentication and Configuration ------------------
+TOKEN = os.environ.get("SBG_API_TOKEN")
+if not TOKEN:
+    raise ValueError("❌ SBG_API_TOKEN environment variable not set.")
+api = sbg.Api(url="https://cavatica-api.sbgenomics.com/v2", token=TOKEN)
 
 # list all files under project
 files = api.files.query(project='yiran/variant-workbench-testing').all()

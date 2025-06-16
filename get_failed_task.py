@@ -1,8 +1,13 @@
 import sevenbridges as sbg
 from datetime import datetime, timedelta
+import os
 
-# Authentication and Configuration
-api = sbg.Api(url='https://cavatica-api.sbgenomics.com/v2', token='TOKEN_KEY')
+# Authentication and Configuration ------------------
+TOKEN = os.environ.get("SBG_API_TOKEN")
+if not TOKEN:
+    raise ValueError("❌ SBG_API_TOKEN environment variable not set.")
+api = sbg.Api(url="https://cavatica-api.sbgenomics.com/v2", token=TOKEN)
+
 project_id = 'yiran/variant-workbench-testing'
 
 # Specify the date for which you want to get the list of failed tasks

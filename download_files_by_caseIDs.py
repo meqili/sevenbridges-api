@@ -1,8 +1,12 @@
 import sevenbridges as sbg
 import argparse
+import os
 
 # Authentication and Configuration ------------------
-api = sbg.Api(url='https://cavatica-api.sbgenomics.com/v2', token='TOKEN_KEY')
+TOKEN = os.environ.get("SBG_API_TOKEN")
+if not TOKEN:
+    raise ValueError("❌ SBG_API_TOKEN environment variable not set.")
+api = sbg.Api(url="https://cavatica-api.sbgenomics.com/v2", token=TOKEN)
 
 # Task Configuration --------------------------------
 # name = 'Kids First DRC Germline SNV Annotation Workflow run - ' + chromosome_interested  # Task name

@@ -1,7 +1,11 @@
 import sevenbridges as sbg
+import os
 
-# Authentication and Configuration
-api = sbg.Api(url='https://cavatica-api.sbgenomics.com/v2', token='TOKEN_KEY')
+# Authentication and Configuration ------------------
+TOKEN = os.environ.get("SBG_API_TOKEN")
+if not TOKEN:
+    raise ValueError("❌ SBG_API_TOKEN environment variable not set.")
+api = sbg.Api(url="https://cavatica-api.sbgenomics.com/v2", token=TOKEN)
 
 # Task ID of the parent batch task
 parent_task_id = '7a3d99ae-4272-46e3-aad3-e22318fa727a'
