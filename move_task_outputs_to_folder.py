@@ -21,18 +21,15 @@ api = sbg.Api(url="https://cavatica-api.sbgenomics.com/v2", token=TOKEN)
 # ------------------ Helper Functions ------------------
 
 def api_call_with_retries(func, *args, **kwargs):
-    max_retries = 5
-    retry_delay = 1
-    for attempt in range(max_retries):
-        try:
-            return func(*args, **kwargs)
-        except TooManyRequests:
-            if attempt < max_retries - 1:
-                print(f"Rate limit exceeded. Retrying in {retry_delay} seconds...")
-                time.sleep(retry_delay)
-                retry_delay *= 2
-            else:
-                raise
+    try:
+        result = func(*args, **kwargs)
+        time.sleep(0.3)
+        return result
+    except TooManyRequests:
+        print("🚨 Rate limit hit. Sleeping for 5 minutes before retrying...")
+        time.sleep(310)  # 5 minutes and 10 seconds
+        # Try once more after sleep
+        return func(*args, **kwargs)
 
 def move_and_print(file_id):
     try:
@@ -57,7 +54,7 @@ task_details = api_call_with_retries(api.tasks.get, id=task_id)
 # Check for batch task
 if task_details.batch:
     print(f"Task {task_id} is a batch task. Fetching child tasks...")
-    batch_children = api_call_with_retries(task_details.get_batch_children)
+    batch_children = api_call_with_retries(task_details.get_batch_children, limit=100).all()
 
     for child in batch_children:
         print(f"Processing child task ID: {child.id}")
@@ -69,9 +66,14 @@ if task_details.batch:
         for output_name, file_info in outputs.items():
             if isinstance(file_info, list):
                 for file in file_info:
-                    move_and_print(file.id)
-            else:
+                    if file is not None:
+                        move_and_print(file.id)
+                    else:
+                        print(f"⚠️ Skipping None output in list for output '{output_name}' in task {child.id}")
+            elif file_info is not None:
                 move_and_print(file_info.id)
+            else:
+                print(f"⚠️ Skipping None output '{output_name}' in task {child.id}")
 else:
     outputs = task_details.outputs
     if not outputs:
